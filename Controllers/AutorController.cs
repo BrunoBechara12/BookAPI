@@ -23,4 +23,12 @@ public class AutorController : ControllerBase
         return Ok(autores);
     }
 
+    [HttpGet("BuscarAutorPorIdLivro/{idLivro}")]
+    public async Task<ActionResult<ResponseModel<List<AutorModel>>>> BuscarAutorPorIdLivro(int idLivro)
+    {
+        var autores = await _autor.BuscarAutorPorIdLivro(idLivro);
+
+        return Ok(autores);
+    }
+
 }
