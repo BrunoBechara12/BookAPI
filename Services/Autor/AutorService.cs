@@ -15,7 +15,34 @@ public class AutorService : IAutorInterface
 
     public async Task<ResponseModel<AutorModel>> BuscarAutorPorId(int idAutor)
     {
-        throw new NotImplementedException();
+        ResponseModel<AutorModel> response = new ResponseModel<AutorModel>();
+
+        try
+        {
+            var autor = await _context.Autores.FirstOrDefaultAsync(a => a.Id == idAutor);
+
+            if (autor != null)
+            {
+                return response = new ResponseModel<AutorModel>
+                {
+                    Mensagem = "Nenhum registro localizado!",
+                    Status = false
+                };
+            }
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+
+            response = new ResponseModel<AutorModel>
+            {
+                Mensagem = ex.Message,
+                Status = false
+            };
+
+            return response;
+        }
     }
 
     public async Task<ResponseModel<AutorModel>> BuscarAutorPorIdLivro(int idLivro)
