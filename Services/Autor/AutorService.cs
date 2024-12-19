@@ -45,7 +45,6 @@ public class AutorService : IAutorInterface
             return response;
         }
     }
-
     public async Task<ResponseModel<AutorModel>> BuscarAutorPorIdLivro(int idLivro)
     {
         ResponseModel<AutorModel> response = new ResponseModel<AutorModel>();
@@ -119,7 +118,6 @@ public class AutorService : IAutorInterface
         }
     }
 
-
     public async Task<ResponseModel<AutorModel>> CriarAutor(AutorCriacaoDto autor)
     {
         ResponseModel<AutorModel> response = new ResponseModel<AutorModel>();
@@ -184,6 +182,42 @@ public class AutorService : IAutorInterface
             {
                 Dados = autorEditado,
                 Mensagem = "Autor editado com sucesso!",
+                Status = true
+            };
+
+            return response;
+
+        }
+        catch (Exception ex)
+        {
+            response = new ResponseModel<AutorModel>
+            {
+                Mensagem = ex.Message,
+                Status = false
+            };
+
+            return response;
+        }
+    }
+    public async Task<ResponseModel<AutorModel>> ExcluirAutor(int idAutor)
+    {
+        ResponseModel<AutorModel> response = new ResponseModel<AutorModel>();
+
+        try
+        {
+            var autorRemovido = _context.Autores.FirstOrDefault(a => a.Id == idAutor);
+
+            if (autorRemovido != null)
+            {
+                _context.Remove(autorRemovido);
+
+                await _context.SaveChangesAsync();
+            }
+
+            response = new ResponseModel<AutorModel>
+            {
+                Dados = autorRemovido,
+                Mensagem = "Autor removido com sucesso!",
                 Status = true
             };
 

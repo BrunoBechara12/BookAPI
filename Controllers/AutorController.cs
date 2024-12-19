@@ -55,4 +55,13 @@ public class AutorController : ControllerBase
 
         return Ok(Autor);
     }
+
+
+    [HttpDelete("ExcluirAutor")]
+    public async Task<ActionResult<ResponseModel<AutorModel>>> ExcluirAutor(int idAutor)
+    {
+        var Autor = await _autor.ExcluirAutor(idAutor);
+
+        return Ok(Autor);
+    }
 }
