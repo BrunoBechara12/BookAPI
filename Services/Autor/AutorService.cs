@@ -1,4 +1,5 @@
 ﻿using BookAPI.Data;
+using BookAPI.Dto.Autor;
 using BookAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -115,6 +116,89 @@ public class AutorService : IAutorInterface
 
             return response;
 
+        }
+    }
+
+
+    public async Task<ResponseModel<AutorModel>> CriarAutor(AutorCriacaoDto autor)
+    {
+        ResponseModel<AutorModel> response = new ResponseModel<AutorModel>();
+
+        try
+        {
+            var autores = _context.Autores;
+
+            var autorBd = new AutorModel()
+            {
+                Nome = autor.Nome,
+                Sobrenome = autor.Sobrenome
+            };
+
+            if(autorBd != null)
+            {
+                autores.Add(autorBd);
+                await _context.SaveChangesAsync();
+            }
+
+            response = new ResponseModel<AutorModel>
+            {
+                Dados = autorBd,
+                Mensagem = "Autor criado com sucesso!",
+                Status = true
+            };
+
+            return response;
+
+        }
+        catch (Exception ex)
+        {
+            response = new ResponseModel<AutorModel>
+            {
+                Mensagem = ex.Message,
+                Status = false
+            };
+
+            return response;
+        }
+    }
+
+    public async Task<ResponseModel<AutorModel>> EditarAutor(AutorEdicaoDto autor)
+    {
+        ResponseModel<AutorModel> response = new ResponseModel<AutorModel>();
+
+        try
+        {
+            var autorEditado = _context.Autores.FirstOrDefault(a => a.Id == autor.Id);
+
+            if (autorEditado != null)
+            {
+                autorEditado.Nome = autor.Nome;
+                autorEditado.Sobrenome = autor.Sobrenome;
+
+                _context.Update(autorEditado);
+
+                await _context.SaveChangesAsync();
+            }
+
+            response = new ResponseModel<AutorModel>
+            {
+                Dados = autorEditado,
+                Mensagem = "Autor editado com sucesso!",
+                Status = true
+            };
+
+            return response;
+
+        }
+        catch (Exception ex)
+        {
+            response = new ResponseModel<AutorModel>
+            {
+                Mensagem = ex.Message,
+                Status = false
+            };
+
+            return response;
         }
     }
 }

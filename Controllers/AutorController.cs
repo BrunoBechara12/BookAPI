@@ -1,4 +1,5 @@
-﻿using BookAPI.Models;
+﻿using BookAPI.Dto.Autor;
+using BookAPI.Models;
 using BookAPI.Services.Autor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,5 +38,21 @@ public class AutorController : ControllerBase
         var autores = await _autor.BuscarAutorPorId(idAutor);
 
         return Ok(autores);
+    }
+
+    [HttpPost("CriarAutor")]
+    public async Task<ActionResult<ResponseModel<AutorModel>>> CriarAutor(AutorCriacaoDto autor)
+    {
+        var Autor = await _autor.CriarAutor(autor);
+
+        return Ok(Autor);
+    }
+
+    [HttpPut("EditarAutor")]
+    public async Task<ActionResult<ResponseModel<AutorModel>>> EditarAutor(AutorEdicaoDto autor)
+    {
+        var Autor = await _autor.EditarAutor(autor);
+
+        return Ok(Autor);
     }
 }
