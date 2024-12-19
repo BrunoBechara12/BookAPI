@@ -1,5 +1,6 @@
 using BookAPI.Data;
 using BookAPI.Services.Autor;
+using BookAPI.Services.Livro;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAutorInterface, AutorService>();
+builder.Services.AddScoped<ILivroInterface, LivroService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
