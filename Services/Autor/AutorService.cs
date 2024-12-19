@@ -26,12 +26,17 @@ public class AutorService : IAutorInterface
             {
                 return response = new ResponseModel<AutorModel>
                 {
-                    Mensagem = "Nenhum registro localizado!",
-                    Status = false
+                    Dados = autor,
+                    Mensagem = "Autor encontrado com sucesso!",
+                    Status = true
                 };
             }
 
-            return response;
+            return response = new ResponseModel<AutorModel>
+            {
+                Mensagem = "Nenhum registro localizado!",
+                Status = false
+            };
         }
         catch (Exception ex)
         {
