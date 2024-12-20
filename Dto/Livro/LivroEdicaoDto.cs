@@ -1,9 +1,10 @@
 ﻿using BookAPI.Models;
 
-namespace BookAPI.Dto.Autor;
+namespace BookAPI.Dto.Livro;
 
-public class LivroCriacaoDto
+public class LivroEdicaoDto
 {
+    public int Id { get; set; }
     public string Titulo { get; set; }
     public int AutorId { get; set; }
 }
