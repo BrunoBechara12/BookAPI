@@ -1,4 +1,5 @@
 ﻿using BookAPI.Dto.Autor;
+using BookAPI.Dto.Retorno;
 using BookAPI.Models;
 using BookAPI.Services.Autor;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +18,7 @@ public class AutorController : ControllerBase
     }
 
     [HttpGet("ListarAutores")]
-    public async Task<ActionResult<ResponseModel<List<AutorModel>>>> ListarAutores()
+    public async Task<ActionResult<ResponseModel<AutorModel>>> ListarAutores()
     {
         var autores = await _autor.ListarAutores();
 
@@ -25,7 +26,7 @@ public class AutorController : ControllerBase
     }
 
     [HttpGet("BuscarAutorPorIdLivro/{idLivro}")]
-    public async Task<ActionResult<ResponseModel<List<AutorModel>>>> BuscarAutorPorIdLivro(int idLivro)
+    public async Task<ActionResult<ResponseModel<AutorModel>>> BuscarAutorPorIdLivro(int idLivro)
     {
         var autores = await _autor.BuscarAutorPorIdLivro(idLivro);
 
@@ -33,7 +34,7 @@ public class AutorController : ControllerBase
     }
 
     [HttpGet("BuscarAutorPorId/{idAutor}")]
-    public async Task<ActionResult<ResponseModel<List<AutorModel>>>> BuscarAutorPorId(int idAutor)
+    public async Task<ActionResult<ResponseModel<AutorModel>>> BuscarAutorPorId(int idAutor)
     {
         var autores = await _autor.BuscarAutorPorId(idAutor);
 
@@ -55,7 +56,6 @@ public class AutorController : ControllerBase
 
         return Ok(Autor);
     }
-
 
     [HttpDelete("ExcluirAutor")]
     public async Task<ActionResult<ResponseModel<AutorModel>>> ExcluirAutor(int idAutor)

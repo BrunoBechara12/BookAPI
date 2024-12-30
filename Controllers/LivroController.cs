@@ -19,7 +19,7 @@ public class LivroController : ControllerBase
     }
 
     [HttpGet("ListarLivros")]
-    public async Task<ActionResult<ResponseModel<List<LivroModel>>>> ListarLivros()
+    public async Task<ActionResult<ResponseModel<LivroModel>>> ListarLivros()
     {
         var livros = await _livro.ListarLivros();
 
@@ -27,7 +27,7 @@ public class LivroController : ControllerBase
     }
 
     [HttpGet("BuscarLivrosPorIdAutor/{idAutor}")]
-    public async Task<ActionResult<ResponseModel<List<LivroModel>>>> BuscarLivrosPorIdAutor(int idAutor)
+    public async Task<ActionResult<ResponseModel<LivroModel>>> BuscarLivrosPorIdAutor(int idAutor)
     {
         var livros = await _livro.BuscarLivrosPorIdAutor(idAutor);
 
@@ -35,7 +35,7 @@ public class LivroController : ControllerBase
     }
 
     [HttpGet("BuscarLivroPorId/{idLivro}")]
-    public async Task<ActionResult<ResponseModel<List<LivroModel>>>> BuscarLivroPorId(int idLivro)
+    public async Task<ActionResult<ResponseModel<LivroModel>>> BuscarLivroPorId(int idLivro)
     {
         var livro = await _livro.BuscarLivroPorId(idLivro);
 

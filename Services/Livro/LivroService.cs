@@ -1,6 +1,7 @@
 ﻿using BookAPI.Data;
 using BookAPI.Dto.Autor;
 using BookAPI.Dto.Livro;
+using BookAPI.Dto.Retorno;
 using BookAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +17,6 @@ public class LivroService : ILivroInterface
 
     public async Task<ResponseModel<LivroModel>> BuscarLivroPorId(int idLivro)
     {
-
-        ResponseModel<LivroModel> response = new ResponseModel<LivroModel>();
-
         try
         {
             var livro = await _context.Livros
@@ -27,72 +25,40 @@ public class LivroService : ILivroInterface
 
             if (livro != null)
             {
-                return response = new ResponseModel<LivroModel>
-                {
-                    Dados = livro,
-                    Mensagem = "Livro encontrado com sucesso!",
-                    Status = true
-                };
+                return ReturnHandler<LivroModel>.Return("Livro encontrado com sucesso!", true, livro);
             }
 
-            return response = new ResponseModel<LivroModel>
-            {
-                Mensagem = "Nenhum registro localizado!",
-                Status = false
-            };
+            return ReturnHandler<LivroModel>.Return("Nenhum livro encontrado com esse ID!", false);
         }
         catch (Exception ex)
         {
-
-            response = new ResponseModel<LivroModel>
-            {
-                Mensagem = ex.Message,
-                Status = false
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Erro ao buscar livro!", false, ex);
         }
     }
 
-    public async Task<ResponseModel<List<LivroModel>>> BuscarLivrosPorIdAutor(int idAutor)
+    public async Task<ResponseModel<LivroModel>> BuscarLivrosPorIdAutor(int idAutor)
     {
-        ResponseModel<List<LivroModel>> response = new ResponseModel<List<LivroModel>>();
-
         try
         {
             var livros = await _context.Livros.Include(a => a.Autor).Where(b => b.Autor.Id == idAutor).ToListAsync();
 
             //var livros = await _context.Livros.Where(a => a.Autor.Id == idAutor).ToListAsync();
 
-            if (livros != null)
+            if (livros.Count > 0)
             {
-                response = new ResponseModel<List<LivroModel>>
-                {
-                    Dados = livros,
-                    Mensagem = "Livros encontrados com sucesso!",
-                    Status = true
-                };
+                return ReturnHandler<LivroModel>.Return("Livros encontrados com sucesso!", true, livros);
             }
 
-            return response;
+            return ReturnHandler<LivroModel>.Return("Nenhum livro encontrado para esse autor!", false);
         }
         catch (Exception ex)
         {
-
-            response = new ResponseModel<List<LivroModel>>
-            {
-                Mensagem = ex.Message,
-                Status = false
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Erro ao buscar livros!", false, ex);
         }
     }
 
     public async Task<ResponseModel<LivroModel>> CriarLivro(LivroCriacaoDto livroDto)
     {
-        ResponseModel<LivroModel> response = new ResponseModel<LivroModel>();
-
         try
         {
             var autor = await _context.Autores
@@ -100,8 +66,7 @@ public class LivroService : ILivroInterface
 
             if (autor == null)
             {
-                response.Mensagem = "Nenhum registro de autor localizado!";
-                return response;
+                return ReturnHandler<LivroModel>.Return("Autor não encontrado!", false);
             }
 
             var livro = new LivroModel()
@@ -113,32 +78,16 @@ public class LivroService : ILivroInterface
             _context.Add(livro);
             await _context.SaveChangesAsync();
 
-            response = new ResponseModel<LivroModel>
-            {
-                Dados = livro,
-                Mensagem = "Livro criado com sucesso!",
-                Status = true
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Livro criado com sucesso!", true, livro);
         }
         catch (Exception ex)
         {
-
-            response = new ResponseModel<LivroModel>
-            {
-                Mensagem = ex.Message,
-                Status = false
-            };
-
-            return response;
+            return ReturnHandler<AutorModel>.Return("Erro ao criar livro!", false, ex);
         }
     }
 
     public async Task<ResponseModel<LivroModel>> EditarLivro(LivroEdicaoDto livro)
     {
-        ResponseModel<LivroModel> response = new ResponseModel<LivroModel>();
-
         try
         {
             var Autor = await _context.Autores.FirstOrDefaultAsync(a => a.Id == livro.AutorId);
@@ -151,100 +100,60 @@ public class LivroService : ILivroInterface
                 livroEditado.Autor = Autor;
 
                 await _context.SaveChangesAsync();
+
+                return ReturnHandler<LivroModel>.Return("Livro editado com sucesso!", true, livroEditado);
             }
 
-            response = new ResponseModel<LivroModel>
-            {
-                Dados = livroEditado,
-                Mensagem = "Livro editado com sucesso!",
-                Status = true
-            };
+            return ReturnHandler<LivroModel>.Return("Não foi encontrado um livro com esse ID!", false);
 
-            return response;
         }
         catch (Exception ex)
         {
-
-            response = new ResponseModel<LivroModel>
-            {
-                Mensagem = ex.Message,
-                Status = false
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Erro ao editar livro!", false, ex);
         }
     }
 
     public async Task<ResponseModel<LivroModel>> ExcluirLivro(int idLivro)
     {
-        ResponseModel<LivroModel> response = new ResponseModel<LivroModel>();
-
         try
         {
             var livroRemovido = _context.Livros.Include(a => a.Autor).FirstOrDefault(a => a.Id == idLivro);
 
             if (livroRemovido != null)
             {
-
                 _context.Remove(livroRemovido);
 
                 await _context.SaveChangesAsync();
+
+                return ReturnHandler<LivroModel>.Return("Livro excluído com sucesso!", true, livroRemovido);
             }
 
-            response = new ResponseModel<LivroModel>
-            {
-                Dados = livroRemovido,
-                Mensagem = "Livro removido com sucesso!",
-                Status = true
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Não foi encontrado um livro com esse ID!", false);
         }
         catch (Exception ex)
         {
-
-            response = new ResponseModel<LivroModel>
-            {
-                Mensagem = ex.Message,
-                Status = false
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Erro ao excluir livro!", false, ex);
         }
     }
 
-    public async Task<ResponseModel<List<LivroModel>>> ListarLivros()
+    public async Task<ResponseModel<LivroModel>> ListarLivros()
     {
-        ResponseModel<List<LivroModel>> response = new ResponseModel<List<LivroModel>>();
-
         try
         {
             var livros = await _context.Livros
                         .Include(a => a.Autor)
                         .ToListAsync();
 
-            if (livros != null)
+            if (livros.Count > 0)
             {
-                response = new ResponseModel<List<LivroModel>>
-                {
-                    Dados = livros,
-                    Mensagem = "Livros encontrados com sucesso!",
-                    Status = true
-                };
+                return ReturnHandler<LivroModel>.Return("Livros encontrados com sucesso!", true, livros);
             }
 
-            return response;
+            return ReturnHandler<LivroModel>.Return("Não foi encontrado nenhum livro!", false);
         }
         catch (Exception ex)
         {
-
-            response = new ResponseModel<List<LivroModel>>
-            {
-                Mensagem = ex.Message,
-                Status = false
-            };
-
-            return response;
+            return ReturnHandler<LivroModel>.Return("Erro ao procurar por livros!", false, ex);
         }
     }
 }
